@@ -1,7 +1,7 @@
 
 import "./App.css";
-import Sidebar from "./components/sidebar/Sidebar";
-import Graphboard from "./graphboard/Graphboard";
+import Sidebar from "./components/sidebar/Sidebar.jsx";
+import Graphboard from "./graphboard/Graphboard.jsx";
 
 
 function App() {

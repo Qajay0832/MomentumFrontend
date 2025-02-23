@@ -1,5 +1,5 @@
 import React from "react";
-import Card from "../components/card/Card";
+import Card from "../components/card/Card.jsx";
 import {
   ReactFlow,
   Background,
@@ -10,7 +10,7 @@ import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import "@xyflow/react/dist/style.css";
 import "./graphboard.css";
-import CommitIcon from "../assets/commitIcon.svg";
+import CommitIcon from "../assets/commiticon.svg";
 
 const Graphboard = () => {
   const [dummyNodes, setDummyNodes] = useState([]);
