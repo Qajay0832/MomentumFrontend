@@ -1,0 +1,87 @@
+.card {
+  background-color: #181E25;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 260px;
+  height: 137px;
+  border-radius: 4px;
+  border: 1px solid #FFAD62;
+  color: white;
+
+
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 6px 10px;
+
+}
+
+.card-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-desc-item {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12.55px;
+  letter-spacing: 0%;
+  padding-top: 6px;
+  gap: 5px;
+}
+
+.card-desc-item-heading {
+  color: #FFAD62;
+}
+
+.card-desc-item-content {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.cardcontenthr {
+  height: 0.5px;
+  background-color: #FFAD62;
+  padding: 0 !important;
+}
+
+.cardcontent {
+  padding: 10px 10px 12px 10px;
+  height: 56%;
+  overflow: auto;
+}
+
+.cardcontent::-webkit-scrollbar {
+  display: none;
+}
+
+.cardcontent:hover::-webkit-scrollbar-thumb:hover{
+  background: #FFAD62;
+  height: 15px;
+  width: 15px;
+  border-radius: 10px;
+}
+
+.cardcontent:hover::-webkit-scrollbar {
+  background: #f4c79c;
+  width: 15px;
+  height: 15px;
+  border-radius: 10px;
+  display: block;
+}
+
+
+
+.card-content-heading {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17.57px;
+  letter-spacing: 0%;
+}

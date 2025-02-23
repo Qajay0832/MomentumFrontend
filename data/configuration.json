@@ -1,0 +1,9 @@
+{ 
+  "flow" : "flow name",
+  "entities_to_mock": ["<values that have been checked in the dependency list>"],
+  "is_db_mocked": false,
+  "db_config": {
+								"username" : "string",
+                                "password" : "string"
+								}
+}
