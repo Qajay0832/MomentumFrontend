@@ -11,24 +11,23 @@ import axios from "axios";
 import "@xyflow/react/dist/style.css";
 import "./graphboard.css";
 import CommitIcon from "../assets/commiticon.svg";
-import { useDispatch, useSelector } from "react-redux";
 import DependencyList from "../../data/dependencies.json";
+import GraphData from "../../data/graph.json";
+import DBConfiguartion from "../../data/configuration.json";
 import dependencyIcon from "../assets/dependencyIcon.svg";
+import { useGraph } from "../redux/useReducer.jsx";
+import Checkbox from "../components/checkbox/Checkbox.jsx";
 
 const Graphboard = () => {
-
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [dummyNodes, setDummyNodes] = useState([]);
   const [dummyEdges, setDummyEdges] = useState([]);
-  const [GraphData, setGraphData] = useState([]);
+  const [dataConfig, setDataConfig] = useState(DBConfiguartion);
   const [hostName, setHostName] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [dbMock, setdbMock] = useState(true);
-  const { loading, data, error } = useSelector((state) => state.data.graph);
-  const { dependenciesId, currentDependency } = useSelector(
-    (state) => state.data.dependency
-  );
+  const { graphData, setData, fillDependencyList } = useGraph();
 
   const DataProcessor = async (data) => {
     // setDummyNodes
@@ -104,39 +103,46 @@ const Graphboard = () => {
 
     await processNodes(data);
   };
+  useEffect(() => {
+    if (graphData.data && graphData.data.function) {
+      DataProcessor(graphData.data);
+    }
+  }, [graphData.data]);
   const fetchData = async () => {
     try {
-      const data = await axios.get(
-        "https://momentumbackend.onrender.com/graph"
-      );
+      const data = await axios.get("https://momentumbackend.onrender.com/graph");
       if (!data) {
         console.log("error");
         return null;
       }
-      DataProcessor(data.data.proxy[0]);
+      setData(data.data.proxy[0]);
+      data.data.dbSchema.entities_to_mock.map((item) => {
+        fillDependencyList(item);
+      });
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
-    // dispatch(fetchData());
     fetchData();
   }, []);
 
   const nodeTypes = useMemo(() => ({ Card: Card }), []);
   const postGraph = () => {
+    // console.log(DependencyList,JSON.parse(JSON.stringify(DependencyList))[0])
+
     axios.post("https://momentumbackend.onrender.com/graph", {
       host: hostName,
       username: username,
       password: password,
       data: GraphData,
+      dependencyList: DependencyList,
+      dependencyIds: graphData.dependencyList,
     });
   };
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+
   return (
     <div className="appContainer">
-      {console.log("redux", JSON.stringify(data, null, 2))}
       <section className="firstContainer">
         <section
           className="mainContainer"
@@ -158,9 +164,13 @@ const Graphboard = () => {
             </ReactFlow>
           )}
         </section>
-        <div className="footer">
-          {currentDependency == null ? "" : "Post/Cards/" + currentDependency}
-        </div>
+        {graphData.currentDependency && (
+          <div className="footer">
+            {graphData.currentDependency == null
+              ? ""
+              : "Post/Cards/" + graphData.currentDependency}
+          </div>
+        )}
       </section>
 
       <section className="secondContainer">
@@ -175,7 +185,9 @@ const Graphboard = () => {
             <p className="commitItems">
               <img src={CommitIcon} alt="commitIcon" />
               <span>
-                {dependenciesId.length == 0 ? "No" : dependenciesId.length}{" "}
+                {graphData.dependencyId.length == 0
+                  ? "No"
+                  : graphData.dependencyId.length}{" "}
                 entry points identified
               </span>
             </p>
@@ -183,12 +195,12 @@ const Graphboard = () => {
           <div className="cartContent">
             <p className="cartHeadings">Selected flow</p>
             <select className="selectCards">
-              {dependenciesId.length == 0 ? (
+              {graphData.dependencyId.length == 0 ? (
                 <option disabled selected>
                   Add Some Cards
                 </option>
               ) : (
-                dependenciesId.map((item) => (
+                graphData.dependencyId.map((item) => (
                   <option key={item} value={item}>
                     POST/cards/{item}
                   </option>
@@ -202,10 +214,7 @@ const Graphboard = () => {
             <div className="cartDependenciesContainer">
               {DependencyList.map((item) => (
                 <div className="cartCheckboxContainer">
-                  <div className="cartCheckboxsection">
-                    <input type="checkbox" className="cartCheckbox" />
-                    <label>{item}</label>
-                  </div>
+                  <Checkbox item={item} />
                   <img src={dependencyIcon} alt="dependencyIcon" />
                 </div>
               ))}
@@ -240,7 +249,7 @@ const Graphboard = () => {
             <div className="cartDatabaseInputs">
               <div className="inputContainer">
                 <input
-                disabled={dbMock}
+                  disabled={dbMock}
                   type="text"
                   className={`textfield ${dbMock ? "disabledtextfield" : ""}`}
                   value={username}
@@ -264,7 +273,7 @@ const Graphboard = () => {
               </div>
               <div className="inputContainer">
                 <input
-                disabled={dbMock}
+                  disabled={dbMock}
                   type="text"
                   className={`textfield ${dbMock ? "disabledtextfield" : ""}`}
                   value={hostName}
@@ -279,7 +288,7 @@ const Graphboard = () => {
         </div>
         <hr />
         <div className="saveContainer">
-          <button className="saveBtn" onClick={postGraph}>
+          <button disabled={dbMock} className="saveBtn" onClick={postGraph}>
             Save
           </button>
         </div>

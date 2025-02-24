@@ -1,12 +1,10 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
 import shareicon from "../../assets/shareicon.svg";
-import { useDispatch } from "react-redux";
-import { addDependency } from "../../redux/actions";
+import { useGraph } from "../../redux/useReducer";
 
 import "./card.css";
 const Card = ({ data }) => {
-  const dispatch = useDispatch();
   const title = data.data.function.split(":")[0].split("/")[
     data.data.function.split(":")[0].split("/").length - 1
   ];
@@ -15,15 +13,23 @@ const Card = ({ data }) => {
     return [param.identifier, param.type];
   });
   const responseobject = data.data.response_object;
-  // console.log(data.data._id);
-
+  const { fillDependencyIds, currentCard } = useGraph();
+  const AddDependency = (id) => {
+    fillDependencyIds(id);
+    currentCard(id);
+  };
   return (
     <div>
       <Handle type="target" position={Position.Left} />
-      <div className="card" >
+      <div className="card">
         <div className="cardTitleContainer">
           <p className="card-title">{title}</p>
-          <img src={shareicon} alt="share" className="shareIcon" onClick={() => dispatch(addDependency(data.data._id))}/>
+          <img
+            src={shareicon}
+            alt="share"
+            className="shareIcon"
+            onClick={() => AddDependency(data.data._id)}
+          />
         </div>
         <div className="cardcontent">
           <p className="card-content-heading">{content}</p>

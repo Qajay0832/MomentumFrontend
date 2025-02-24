@@ -1,10 +1,9 @@
-import rootReducer from './redux/reducers';
-import { configureStore } from '@reduxjs/toolkit'; 
+import { configureStore } from "@reduxjs/toolkit";
+import graphReducer from './redux/actions.jsx'
 
-const store = configureStore({
-  reducer: {
-    data: rootReducer,
-  },
-});
 
-export default store;
+export default configureStore({
+    reducer:{
+        graph:graphReducer
+    }
+})

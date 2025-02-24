@@ -72,8 +72,17 @@
             },
             {
               "function": "/litellm/proxy/utils.py:_is_valid_team_configs",
-              "params": [],
-              "response_object": "",
+              "params": [
+            {
+              "identifier": "self",
+              "type": null
+            },
+            {
+              "identifier": "team_id",
+              "type": "str"
+            }
+          ],
+          "response_object": "",
               "children": []
             }
           ]
@@ -286,7 +295,16 @@
         },
         {
           "function": "/litellm/proxy/utils.py:_is_valid_team_configs",
-          "params": [],
+          "params": [
+            {
+              "identifier": "self",
+              "type": null
+            },
+            {
+              "identifier": "team_id",
+              "type": "str"
+            }
+          ],
           "response_object": "",
           "children": []
         },

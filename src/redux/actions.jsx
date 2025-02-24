@@ -1,41 +1,46 @@
-import {
-  FETCH_GRAPH_DATA_REQUEST,
-  FETCH_GRAPH_DATA_SUCCESS,
-  FETCH_GRAPH_DATA_FAILURE,
-} from "./actionTypes";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
-export const fetchgraph = () => {
-  return (dispatch) => {
-    dispatch({ type: FETCH_GRAPH_DATA_REQUEST });
-
-    axios
-      .get("https://momentumbackend.onrender.com/graph")
-      .then((response) => {
-        console.log(response);
-        
-        dispatch({
-          type: FETCH_GRAPH_DATA_SUCCESS,
-          payload: response.json(),
-        });
-      })
-      .catch((error) => {
-        dispatch({
-          type: FETCH_GRAPH_DATA_FAILURE,
-          error: error.message,
-        });
-      });
-  };
-};
-
-// Add dependency action
-export const addDependency = (dependencyId) => ({
-  type: 'ADD_DEPENDENCY',
-  payload: dependencyId,
+export const graphSlice = createSlice({
+  name: "graph",
+  initialState: {
+    data: null,
+    dependencyList: [],
+    dependencyId: [],
+    currentDependency: null,
+  },
+  reducers: {
+    addDependencyId: (state, action) => {
+      state.dependencyId = [...state.dependencyId, action.payload];
+    },
+    addCurrentDependency: (state, action) => {
+      state.currentDependency = action.payload;
+    },
+    updateData: (state, action) => {
+      state.data = action.payload;
+    },
+    removeDependencyId: (state, action) => {
+      state.dependencyId = state.dependencyId.filter(
+        (e) => e != action.payload
+      );
+    },
+    addDependencyList: (state, action) => {
+      state.dependencyList = [...state.dependencyList, action.payload];
+    },
+    removeDependencyList: (state, action) => {
+      state.dependencyList = state.dependencyList.filter(
+        (e) => e != action.payload
+      );
+    },
+  },
 });
 
-// Remove dependency action
-export const removeDependency = (dependencyId) => ({
-  type: 'REMOVE_DEPENDENCY',
-  payload: dependencyId,
-});
+export const {
+  updateData,
+  addCurrentDependency,
+  removeDependencyId,
+  addDependencyId,
+  removeDependencyList,
+  addDependencyList,
+} = graphSlice.actions;
+
+export default graphSlice.reducer;
