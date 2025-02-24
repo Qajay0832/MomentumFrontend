@@ -5,6 +5,7 @@ import { useGraph } from "../../redux/useReducer";
 
 import "./card.css";
 const Card = ({ data }) => {
+  const { graphData } = useGraph();
   const title = data.data.function.split(":")[0].split("/")[
     data.data.function.split(":")[0].split("/").length - 1
   ];
@@ -36,7 +37,12 @@ const Card = ({ data }) => {
           <div className="card-desc">
             <div className="card-desc-item">
               <p className="card-desc-item-heading">"DependentLibs"</p>:
-              <p className="card-desc-item-content"> [“sqlalchemy”]</p>
+              <p className="card-desc-item-content">
+                {" "}
+                {graphData.dependencyList
+                  ? graphData.dependencyList.map((e) => <p>{e}</p>)
+                  : ["sqlalchemy"]}
+              </p>
             </div>
             <div className="card-desc-item">
               <p className="card-desc-item-heading">"Params"</p>:

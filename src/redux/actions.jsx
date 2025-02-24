@@ -24,6 +24,9 @@ export const graphSlice = createSlice({
       );
     },
     addDependencyList: (state, action) => {
+      state.dependencyList.find((e) => e == action.payload)
+        ? null
+        :
       state.dependencyList = [...state.dependencyList, action.payload];
     },
     removeDependencyList: (state, action) => {

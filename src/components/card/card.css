@@ -32,7 +32,7 @@
 
 .card-desc-item {
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   font-weight: 400;
   font-size: 10px;
   line-height: 12.55px;

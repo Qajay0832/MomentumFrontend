@@ -19,7 +19,6 @@ import { useGraph } from "../redux/useReducer.jsx";
 import Checkbox from "../components/checkbox/Checkbox.jsx";
 
 const Graphboard = () => {
-  // const dispatch = useDispatch();
   const [dummyNodes, setDummyNodes] = useState([]);
   const [dummyEdges, setDummyEdges] = useState([]);
   const [dataConfig, setDataConfig] = useState(DBConfiguartion);
@@ -110,15 +109,21 @@ const Graphboard = () => {
   }, [graphData.data]);
   const fetchData = async () => {
     try {
-      const data = await axios.get("https://momentumbackend.onrender.com/graph");
+      const data = await axios.get(
+        "https://momentumbackend.onrender.com/graph"
+      );
       if (!data) {
         console.log("error");
         return null;
       }
       setData(data.data.proxy[0]);
-      data.data.dbSchema.entities_to_mock.map((item) => {
+
+      data.data.dbSchema[0].entities_to_mock.map((item) => {
         fillDependencyList(item);
       });
+      alert(
+        "Please enter Username Qajay0832 and Password Ajayq0832 and host Ajay Tiwari to add dependencies"
+      );
     } catch (error) {
       console.log(error);
     }
@@ -128,17 +133,34 @@ const Graphboard = () => {
   }, []);
 
   const nodeTypes = useMemo(() => ({ Card: Card }), []);
-  const postGraph = () => {
-    // console.log(DependencyList,JSON.parse(JSON.stringify(DependencyList))[0])
-
-    axios.post("https://momentumbackend.onrender.com/graph", {
-      host: hostName,
-      username: username,
-      password: password,
-      data: GraphData,
-      dependencyList: DependencyList,
-      dependencyIds: graphData.dependencyList,
-    });
+  const postGraph = async () => {
+    setHostName("");
+    setUsername("");
+    setPassword("");
+    try {
+      const updateGraph = await axios.post(
+        "https://momentumbackend.onrender.com/graph",
+        {
+          host: hostName,
+          username: username,
+          password: password,
+          data: GraphData,
+          dependencyList: DependencyList,
+          dependencyIds: graphData.dependencyList,
+        }
+      );
+      if (!updateGraph) {
+        console.log("Error in updating the Dependencies");
+        alert("Error in updating the Dependencies");
+        return;
+      }
+      alert("Dependencies Updated Successfully");
+      return;
+    } catch (error) {
+      console.log(error);
+      alert("Error in updating the Dependencies ! Please try Again!");
+      return;
+    }
   };
 
   return (
@@ -148,7 +170,7 @@ const Graphboard = () => {
           className="mainContainer"
           style={{ height: "100vh", width: "100vw" }}
         >
-          {dummyNodes && dummyEdges && console.log(dummyNodes)}
+          {/* {dummyNodes && dummyEdges && console.log(dummyNodes)} */}
           {dummyNodes && dummyEdges && (
             <ReactFlow
               style={{ height: "100vh", width: "100vw" }}
