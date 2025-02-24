@@ -1,10 +1,12 @@
 import React from "react";
-import { useCallback } from "react";
 import { Handle, Position } from "@xyflow/react";
+import shareicon from "../../assets/shareicon.svg";
+import { useDispatch } from "react-redux";
+import { addDependency } from "../../redux/actions";
 
 import "./card.css";
-const handleStyle = { left: 10 };
 const Card = ({ data }) => {
+  const dispatch = useDispatch();
   const title = data.data.function.split(":")[0].split("/")[
     data.data.function.split(":")[0].split("/").length - 1
   ];
@@ -13,14 +15,16 @@ const Card = ({ data }) => {
     return [param.identifier, param.type];
   });
   const responseobject = data.data.response_object;
-  // console.log(data.data);
+  // console.log(data.data._id);
 
   return (
-    <>
+    <div>
       <Handle type="target" position={Position.Left} />
-      <div className="card" onClick={() => console.log("params",params)}>
-        <p className="card-title">{title}</p>
-        <hr className="cardcontenthr" />
+      <div className="card" >
+        <div className="cardTitleContainer">
+          <p className="card-title">{title}</p>
+          <img src={shareicon} alt="share" className="shareIcon" onClick={() => dispatch(addDependency(data.data._id))}/>
+        </div>
         <div className="cardcontent">
           <p className="card-content-heading">{content}</p>
           <div className="card-desc">
@@ -33,7 +37,11 @@ const Card = ({ data }) => {
               <p className="card-desc-item-content">
                 {params.map((param) => {
                   return (
-                      <span>{params.length == 0 ? ["null"] : [param[0],"-", param[1]]}</span>
+                    <span>
+                      {params.length == 0
+                        ? ["null"]
+                        : [param[0], "-", param[1]]}
+                    </span>
                   );
                 })}
               </p>
@@ -49,7 +57,7 @@ const Card = ({ data }) => {
         </div>
       </div>
       <Handle type="source" position={Position.Right} id="a" />
-    </>
+    </div>
   );
 };
 

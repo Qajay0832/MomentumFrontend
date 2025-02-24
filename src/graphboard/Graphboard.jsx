@@ -11,14 +11,24 @@ import axios from "axios";
 import "@xyflow/react/dist/style.css";
 import "./graphboard.css";
 import CommitIcon from "../assets/commiticon.svg";
+import { useDispatch, useSelector } from "react-redux";
+import DependencyList from "../../data/dependencies.json";
+import dependencyIcon from "../assets/dependencyIcon.svg";
 
 const Graphboard = () => {
+
+  const dispatch = useDispatch();
   const [dummyNodes, setDummyNodes] = useState([]);
   const [dummyEdges, setDummyEdges] = useState([]);
   const [GraphData, setGraphData] = useState([]);
   const [hostName, setHostName] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [dbMock, setdbMock] = useState(true);
+  const { loading, data, error } = useSelector((state) => state.data.graph);
+  const { dependenciesId, currentDependency } = useSelector(
+    (state) => state.data.dependency
+  );
 
   const DataProcessor = async (data) => {
     // setDummyNodes
@@ -94,9 +104,11 @@ const Graphboard = () => {
 
     await processNodes(data);
   };
-  const fetchgraph = async () => {
+  const fetchData = async () => {
     try {
-      const data = await axios.get("https://momentumbackend.onrender.com/graph");
+      const data = await axios.get(
+        "https://momentumbackend.onrender.com/graph"
+      );
       if (!data) {
         console.log("error");
         return null;
@@ -107,7 +119,8 @@ const Graphboard = () => {
     }
   };
   useEffect(() => {
-    fetchgraph();
+    // dispatch(fetchData());
+    fetchData();
   }, []);
 
   const nodeTypes = useMemo(() => ({ Card: Card }), []);
@@ -116,11 +129,14 @@ const Graphboard = () => {
       host: hostName,
       username: username,
       password: password,
-      data:GraphData
+      data: GraphData,
     });
   };
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
   return (
     <div className="appContainer">
+      {console.log("redux", JSON.stringify(data, null, 2))}
       <section className="firstContainer">
         <section
           className="mainContainer"
@@ -142,7 +158,9 @@ const Graphboard = () => {
             </ReactFlow>
           )}
         </section>
-        <div className="footer">{"hello world"}</div>
+        <div className="footer">
+          {currentDependency == null ? "" : "Post/Cards/" + currentDependency}
+        </div>
       </section>
 
       <section className="secondContainer">
@@ -156,39 +174,41 @@ const Graphboard = () => {
             </p>
             <p className="commitItems">
               <img src={CommitIcon} alt="commitIcon" />
-              <span>5 entry points identified</span>
+              <span>
+                {dependenciesId.length == 0 ? "No" : dependenciesId.length}{" "}
+                entry points identified
+              </span>
             </p>
           </div>
           <div className="cartContent">
             <p className="cartHeadings">Selected flow</p>
             <select className="selectCards">
-              <option value="1">Flow 1</option>
+              {dependenciesId.length == 0 ? (
+                <option disabled selected>
+                  Add Some Cards
+                </option>
+              ) : (
+                dependenciesId.map((item) => (
+                  <option key={item} value={item}>
+                    POST/cards/{item}
+                  </option>
+                ))
+              )}
             </select>
           </div>
           <div className="cartContent">
             <p className="cartHeadings">Dependencies</p>
             <p className="cartsubHeadings">Select the ones you want to mock</p>
             <div className="cartDependenciesContainer">
-              <div className="cartCheckboxContainer">
-                <input type="checkbox" className="cartCheckbox"></input>
-                <label>httpx</label>
-              </div>
-              <div className="cartCheckboxContainer">
-                <input type="checkbox"></input>
-                <label>product_client</label>
-              </div>
-              <div className="cartCheckboxContainer">
-                <input type="checkbox"></input>
-                <label>sqlalchemy.orm</label>
-              </div>
-              <div className="cartCheckboxContainer">
-                <input type="checkbox"></input>
-                <label>cart_crud</label>
-              </div>
-              <div className="cartCheckboxContainer">
-                <input type="checkbox"></input>
-                <label>cartModel</label>
-              </div>
+              {DependencyList.map((item) => (
+                <div className="cartCheckboxContainer">
+                  <div className="cartCheckboxsection">
+                    <input type="checkbox" className="cartCheckbox" />
+                    <label>{item}</label>
+                  </div>
+                  <img src={dependencyIcon} alt="dependencyIcon" />
+                </div>
+              ))}
             </div>
           </div>
           <div className="cartContent">
@@ -197,12 +217,20 @@ const Graphboard = () => {
               Select if you want to mock databases
             </p>
             <div className="cartDependenciesContainer">
-              <div className="cartCheckboxContainer">
-                <input type="checkbox"></input>
+              <div className="cartCheckboxsection">
+                <input
+                  type="checkbox"
+                  checked={dbMock}
+                  onChange={() => setdbMock(!dbMock)}
+                ></input>
                 <label>I want to mock databases</label>
               </div>
-              <div className="cartCheckboxContainer">
-                <input type="checkbox"></input>
+              <div className="cartCheckboxsection">
+                <input
+                  type="checkbox"
+                  checked={!dbMock}
+                  onChange={() => setdbMock(!dbMock)}
+                ></input>
                 <label>I don’t want to mock database</label>
               </div>
             </div>
@@ -212,37 +240,37 @@ const Graphboard = () => {
             <div className="cartDatabaseInputs">
               <div className="inputContainer">
                 <input
+                disabled={dbMock}
                   type="text"
-                  id="textfield"
-                  className="textfield"
+                  className={`textfield ${dbMock ? "disabledtextfield" : ""}`}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
-                <label for="textfield" className="input-label">
+                <label htmlFor="textfield" className="input-label">
                   Database User
                 </label>
               </div>
               <div className="inputContainer">
                 <input
+                  disabled={dbMock}
                   type="text"
-                  id="textfield"
-                  className="textfield"
+                  className={`textfield ${dbMock ? "disabledtextfield" : ""}`}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <label for="textfield" className="input-label">
+                <label htmlFor="textfield" className="input-label">
                   Database Password
                 </label>
               </div>
               <div className="inputContainer">
                 <input
+                disabled={dbMock}
                   type="text"
-                  id="textfield"
-                  className="textfield"
+                  className={`textfield ${dbMock ? "disabledtextfield" : ""}`}
                   value={hostName}
                   onChange={(e) => setHostName(e.target.value)}
                 />
-                <label for="textfield" className="input-label">
+                <label htmlFor="textfield" className="input-label">
                   Database Hostname
                 </label>
               </div>

@@ -5,7 +5,7 @@
   width: 100%;
   display: flex;
   width: calc(100% - 55px);
-  height: 94vh;
+  height: 93vh;
   background-color: blue;
   overflow: hidden;
 }
@@ -133,11 +133,17 @@
 .cartCheckboxContainer {
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
   font-weight: 500;
   font-size: 15px;
   line-height: 18.83px;
   letter-spacing: 0%;
+}
+
+.cartCheckboxsection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .cartDatabaseInputs {
@@ -163,6 +169,10 @@
   font-size: 16px;
   background-color: #363636;
   color: white;
+}
+
+.disabledtextfield {
+  border: 2px solid grey;
 }
 
 .input-label {
@@ -211,8 +221,16 @@
 }
 
 .footer {
+  color: #BDBDBD;
+  padding: 0 0 0 11px;
   background-color: #363636;
   height: 38px;
   align-items: center;
   display: flex;
+  border: 1px solid #BDBDBD;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20.08px;
+  letter-spacing: 0%;
+
 }

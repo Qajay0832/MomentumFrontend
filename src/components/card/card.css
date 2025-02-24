@@ -9,12 +9,19 @@
 
 
 }
-
+.cardTitleContainer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  border-bottom: 1px solid #FFAD62;
+}
 .card-title {
   font-size: 18px;
   font-weight: bold;
-  padding: 6px 10px;
-
+}
+.shareIcon{
+  cursor: pointer;
 }
 
 .card-desc {
